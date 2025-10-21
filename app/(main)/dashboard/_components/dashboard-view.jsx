@@ -9,9 +9,23 @@ import {Progress} from "@/components/ui/progress";
 import {Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
 
 const DashboardView = ({insights}) => {
-    const salaryData = insights.salaryRanges.map((range) => ({
-        name: range.role, min: range.min / 1000, max: range.max / 1000, median: range.median / 1000,
-    }));
+    const safeArray = (v) => (Array.isArray(v) ? v : []);
+    const toNum = (v) => {
+        if (typeof v === 'number' && !isNaN(v)) return v;
+        const n = parseFloat(v);
+        return isNaN(n) ? 0 : n;
+    };
+    const salaryData = safeArray(insights?.salaryRanges).map((range) => {
+        const min = toNum(range.min);
+        const max = toNum(range.max);
+        const median = toNum(range.median);
+        return {
+            name: range.role || "Role",
+            min: Math.max(0, min / 1000),
+            max: Math.max(0, max / 1000),
+            median: Math.max(0, median / 1000),
+        };
+    });
 
     const getDemandLevelColor = (level) => {
         switch (level.toLowerCase()) {
@@ -39,10 +53,12 @@ const DashboardView = ({insights}) => {
         }
     };
 
-    const OutlookIcon = getMarketOutlookInfo(insights.marketOutlook).icon;
-    const outlookColor = getMarketOutlookInfo(insights.marketOutlook).color;
-    const lastUpdatedDate = format(new Date(insights.lastUpdated), "dd/MM/yyyy");
-    const nextUpdateDistance = formatDistanceToNow(new Date(insights.nextUpdate), {addSuffix: true});
+    const outlookMeta = getMarketOutlookInfo(String(insights?.marketOutlook || 'NEUTRAL'));
+    const OutlookIcon = outlookMeta.icon;
+    const outlookColor = outlookMeta.color;
+    const growth = toNum(insights?.growthRate);
+    const lastUpdatedDate = insights?.lastUpdated ? format(new Date(insights.lastUpdated), "dd/MM/yyyy") : "-";
+    const nextUpdateDistance = insights?.nextUpdate ? formatDistanceToNow(new Date(insights.nextUpdate), {addSuffix: true}) : "soon";
 
     return (<div className="space-y-6">
         <div className="flex justify-between items-center">
