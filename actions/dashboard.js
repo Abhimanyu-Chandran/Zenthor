@@ -5,7 +5,43 @@ import {auth} from "@clerk/nextjs/server";
 import {GoogleGenerativeAI} from "@google/generative-ai";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({model: "gemini-1.5-flash",});
+const model = genAI.getGenerativeModel({model: "gemini-1.5-flash"});
+
+function extractJson(text) {
+    if (!text) return null;
+    // Remove code fences and any leading/trailing junk
+    let cleaned = text.replace(/```(?:json)?/gi, "").replace(/```/g, "").trim();
+    // Try to extract the first JSON object if there is extra text
+    const start = cleaned.indexOf("{");
+    const end = cleaned.lastIndexOf("}");
+    if (start !== -1 && end !== -1 && end > start) {
+        cleaned = cleaned.slice(start, end + 1);
+    }
+    try {
+        return JSON.parse(cleaned);
+    } catch (_) {
+        return null;
+    }
+}
+
+function normalizeInsights(insights) {
+    if (!insights) return null;
+    const normalizeEnum = (v) => (typeof v === "string" ? v.trim().toUpperCase() : undefined);
+    const normalizePercent = (v) => {
+        if (typeof v === "number") return v;
+        if (typeof v === "string") {
+            const m = v.match(/-?\d+(?:\.\d+)?/);
+            return m ? parseFloat(m[0]) : undefined;
+        }
+        return undefined;
+    };
+    return {
+        ...insights,
+        demandLevel: normalizeEnum(insights.demandLevel),
+        marketOutlook: normalizeEnum(insights.marketOutlook),
+        growthRate: normalizePercent(insights.growthRate),
+    };
+}
 
 export const generateAIInsights = async (industry) => {
     const prompt = `
@@ -30,9 +66,12 @@ export const generateAIInsights = async (industry) => {
 
     const result = await model.generateContent(prompt);
     const response = result.response;
-    const text = response.text();
-    const cleanedText = text.replace(/```(?:json)?\n?/g, "").trim();
-    return JSON.parse(cleanedText);
+    const text = await response.text();
+    const parsed = extractJson(text);
+    if (!parsed) {
+        throw new Error("Failed to parse AI insights JSON");
+    }
+    return normalizeInsights(parsed);
 };
 
 export async function getIndustryInsights() {
@@ -64,14 +103,11 @@ export async function getIndustryInsights() {
             marketOutlook: insights?.marketOutlook ? String(insights.marketOutlook).toUpperCase() : undefined,
         };
 
-        const industryInsight = await db.industryInsight.create({
+        return await db.industryInsight.create({
             data: {
-                industry: user.industry,
-                ...normalized,
-                nextUpdate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+                industry: user.industry, ...normalized, nextUpdate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
             },
         });
-        return industryInsight;
     }
     return user.industryInsight;
 }
