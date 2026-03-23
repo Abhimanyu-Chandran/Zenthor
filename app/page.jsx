@@ -29,7 +29,7 @@ export default function Home() {
                                 <div className="flex flex-col items-center justify-center">
                                     {feature.icon}
                                     <h3 className="text-xl font-bold mb-2">
-                                        {feature.title}</h3>2
+                                        {feature.title}</h3>
                                     <p className="text-muted-foreground">
                                         {feature.description}</p>
                                 </div>
