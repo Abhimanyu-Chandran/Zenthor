@@ -13,7 +13,7 @@ export const metadata = {
 };
 
 export default function RootLayout({children}) {
-    return (<ClerkProvider appearence={{
+    return (<ClerkProvider appearance={{
         baseTheme: dark,
     }}>
 
