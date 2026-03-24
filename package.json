@@ -35,7 +35,11 @@
     "html2pdf.js": "^0.12.1",
     "inngest": "^3.40.1",
     "lucide-react": "^0.526.0",
+<<<<<<< HEAD
     "next": "^16.2.1",
+=======
+    "next": "^15.2.3",
+>>>>>>> parent of 1c5c795 (Update Next.js and ESLint configuration versions in package.json and package-lock.json)
     "next-themes": "^0.4.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -50,7 +54,7 @@
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "eslint": "^9",
-    "eslint-config-next": "15.5.11",
+    "eslint-config-next": "15.4.4",
     "prisma": "^6.14.0",
     "tailwindcss": "^4",
     "tw-animate-css": "^1.3.6"
