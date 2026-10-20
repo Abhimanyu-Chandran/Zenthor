@@ -1,20 +1,20 @@
 import Image from "next/image";
 import Link from "next/link";
-import {ArrowRight} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import HeroSection from "@/components/hero";
-import {features} from "@/data/features";
-import {Card, CardContent} from "@/components/ui/card";
-import {howItWorks} from "@/data/howItWorks";
-import {testimonial} from "@/data/testimonial";
-import {faqs} from "@/data/faqs";
-import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion";
-import {Button} from "@/components/ui/button";
+import { features } from "@/data/features";
+import { Card, CardContent } from "@/components/ui/card";
+import { howItWorks } from "@/data/howItWorks";
+import { testimonial } from "@/data/testimonial";
+import { faqs } from "@/data/faqs";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
     return <div>
         <div className="grid-background"></div>
 
-        <HeroSection/>
+        <HeroSection />
 
         <section className="w-full py-12 md:py-24 lg:py-32 bg-background">
             <div className="container mx-auto px-4 md:px-6">
@@ -24,12 +24,12 @@ export default function Home() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
                     {features.map((feature, index) => {
                         return (<Card key={index}
-                                      className="border-2 hover:border-primary transition-colors duration-300">
+                            className="border-2 hover:border-primary transition-colors duration-300">
                             <CardContent className="pt-6 text-center flex flex-col items-center">
                                 <div className="flex flex-col items-center justify-center">
                                     {feature.icon}
                                     <h3 className="text-xl font-bold mb-2">
-                                        {feature.title}</h3>2
+                                        {feature.title}</h3>
                                     <p className="text-muted-foreground">
                                         {feature.description}</p>
                                 </div>
@@ -92,8 +92,7 @@ export default function Home() {
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
                     {testimonial.map((testimonial, index) => {
-                        return (<Card key={index}
-                                      className="bg-background">
+                        return (<Card key={index} className="bg-background">
                             <CardContent className="pt-6">
                                 <div className="flex flex-col space-y-4">
                                     <div className="flex items-center space-x-4">
@@ -171,7 +170,7 @@ export default function Home() {
                             size="lg"
                             variant="secondary"
                             className="h-11 mt-5 animate-bounce">
-                            Start Your Journey Today <ArrowRight className="ml-2 h-4 w-4"/>
+                            Start Your Journey Today <ArrowRight className="ml-2 h-4 w-4" />
                         </Button>
                     </Link>
                 </div>
